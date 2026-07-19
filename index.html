@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Discord Bot 受注制作 — KarenElysia</title>
+<meta name="description" content="あなたのDiscordサーバーを、もっと快適で便利で楽しく。完全受注生産のオリジナルBot開発。公式Discordパートナー運営者・大手ゲームメーカー公式サーバー構築実績。" />
+<style>
+  :root {
+    --bg: #f7f8fc;
+    --surface: #ffffff;
+    --surface2: #f2f3f8;
+    --border: #e3e5ef;
+    --ink: #1b1d29;
+    --sub: #5c6070;
+    --blurple: #5865f2;
+    --blurple-dark: #4752c4;
+    --pink: #eb459e;
+    --mint: #23c48e;
+    --gold: #f5a623;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16171f;
+      --surface: #1e2029;
+      --surface2: #262835;
+      --border: #34364a;
+      --ink: #f2f3f8;
+      --sub: #9a9db3;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16171f; --surface: #1e2029; --surface2: #262835;
+    --border: #34364a; --ink: #f2f3f8; --sub: #9a9db3;
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f8fc; --surface: #ffffff; --surface2: #f2f3f8;
+    --border: #e3e5ef; --ink: #1b1d29; --sub: #5c6070;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  img, svg { max-width: 100%; }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── Nav ── */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px; }
+  .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, var(--blurple), var(--pink)); }
+  .nav a.cta {
+    background: linear-gradient(135deg, var(--blurple), var(--pink));
+    color: #fff; text-decoration: none; font-weight: 700; font-size: 13px;
+    padding: 9px 18px; border-radius: 20px; white-space: nowrap;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    padding: 56px 0 64px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: -40% -10% auto -10%; height: 420px;
+    background: radial-gradient(60% 60% at 30% 30%, rgba(88,101,242,.22), transparent 70%),
+                radial-gradient(50% 50% at 75% 40%, rgba(235,69,158,.18), transparent 70%);
+    filter: blur(10px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hero > * { position: relative; z-index: 1; }
+  .eyebrow {
+    display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .04em;
+    color: var(--blurple); background: rgba(88,101,242,.1); border: 1px solid rgba(88,101,242,.25);
+    border-radius: 20px; padding: 6px 14px; margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(26px, 4.4vw, 40px);
+    font-weight: 800; letter-spacing: -0.02em; margin: 0 0 16px;
+  }
+  h1 .accent {
+    background: linear-gradient(135deg, var(--blurple), var(--pink));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p.lead { font-size: 15px; color: var(--sub); max-width: 620px; margin: 0 auto 28px; }
+
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 800; font-size: 14px; text-decoration: none;
+    padding: 13px 26px; border-radius: 14px; border: none; cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blurple), var(--blurple-dark));
+    color: #fff; box-shadow: 0 10px 26px rgba(88,101,242,.35);
+  }
+  .btn-kofi {
+    background: linear-gradient(135deg, var(--gold), #e08e00);
+    color: #fff; box-shadow: 0 10px 26px rgba(245,166,35,.3);
+  }
+
+  /* ── Trust badges ── */
+  .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .badge {
+    font-size: 12.5px; font-weight: 700; padding: 8px 14px; border-radius: 20px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--sub);
+  }
+
+  /* ── Section shell ── */
+  section { padding: 52px 0; }
+  .section-title { text-align: center; margin-bottom: 8px; }
+  .section-title h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 800; margin: 0 0 8px; }
+  .section-title p { color: var(--sub); font-size: 14px; margin: 0 auto 36px; max-width: 560px; text-align: center; }
+
+  /* ── Features ── */
+  .grid4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 640px) { .grid4 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 22px 20px;
+  }
+  .card .icon {
+    width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 19px; margin-bottom: 14px;
+    background: rgba(88,101,242,.12); color: var(--blurple);
+  }
+  .card h3 { font-size: 15px; font-weight: 800; margin: 0 0 6px; }
+  .card p { font-size: 13px; color: var(--sub); margin: 0; }
+
+  /* ── Flow ── */
+  .flow { display: flex; flex-direction: column; gap: 0; counter-reset: step; }
+  .flow-item {
+    display: flex; gap: 18px; padding: 18px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .flow-item:last-child { border-bottom: none; }
+  .flow-num {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blurple), var(--pink));
+    color: #fff; font-weight: 800; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-body h4 { margin: 4px 0 4px; font-size: 14.5px; font-weight: 800; }
+  .flow-body p { margin: 0; font-size: 13px; color: var(--sub); }
+
+  /* ── Support tiers ── */
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 760px) { .tiers { grid-template-columns: 1fr; } }
+  .tier {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px 18px; text-align: center;
+  }
+  .tier .name { font-size: 13px; font-weight: 800; color: var(--sub); text-transform: uppercase; letter-spacing: .04em; }
+  .tier .price { font-size: 24px; font-weight: 800; margin: 8px 0 12px; }
+  .tier .price small { font-size: 12px; font-weight: 600; color: var(--sub); }
+  .tier ul { list-style: none; padding: 0; margin: 0 0 16px; font-size: 12.5px; color: var(--sub); text-align: left; }
+  .tier li { padding: 4px 0; padding-left: 18px; position: relative; }
+  .tier li::before { content: "✓"; position: absolute; left: 0; color: var(--mint); font-weight: 800; }
+  .note-tag {
+    text-align: center; font-size: 11.5px; color: var(--sub); margin-top: 14px;
+  }
+
+  /* ── Contact ── */
+  .contact-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    padding: 36px 28px; text-align: center;
+  }
+  .contact-box h2 { font-size: clamp(19px, 3vw, 24px); margin: 0 0 10px; }
+  .contact-box p { color: var(--sub); font-size: 13.5px; max-width: 480px; margin: 0 auto 22px; }
+
+  footer { padding: 30px 0 50px; text-align: center; font-size: 12px; color: var(--sub); }
+  footer a { color: var(--sub); text-decoration: underline; }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <nav class="nav">
+      <div class="brand"><span class="dot"></span> KarenElysia Bot Order</div>
+      <a class="cta" href="https://ko-fi.com/karenelysia" target="_blank" rel="noopener noreferrer">Ko-fiで相談する</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow">完全受注生産 · Discord Bot 開発</span>
+      <h1>あなたのサーバーを、<br class="hide-sm"><span class="accent">もっと快適・便利・楽しく。</span></h1>
+      <p class="lead">
+        リアクションのコントロール、流れない固定メモの設置、過去ログの出力、みんなで盛り上がるミニゲームまで。
+        ご希望に合わせて、オリジナルのDiscord Botを一から製作します。Botの仕様にぴったり合ったサーバー環境のご用意も可能です。
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-kofi" href="https://ko-fi.com/karenelysia" target="_blank" rel="noopener noreferrer">☕ Ko-fiで相談・依頼する</a>
+        <a class="btn btn-primary" href="#flow">依頼の流れを見る</a>
+      </div>
+
+      <div class="badges">
+        <span class="badge">🤝 公式Discordパートナーサーバー管理者</span>
+        <span class="badge">🎮 大手ゲームメーカー公式サーバー構築・運営実績</span>
+        <span class="badge">⚡ 完全受注生産・柔軟なカスタマイズ</span>
+      </div>
+    </div>
+  </header>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>できること</h2>
+        <p>Discord標準機能だけでは物足りない、あと一歩の「かゆいところ」に届くBotを製作します。</p>
+      </div>
+      <div class="grid4">
+        <div class="card">
+          <div class="icon">🎛️</div>
+          <h3>リアクションコントロール</h3>
+          <p>ロール付与・投票・受付管理など、リアクションを起点にした自動化を柔軟に設計します。</p>
+        </div>
+        <div class="card">
+          <div class="icon">📌</div>
+          <h3>流れない固定メモ</h3>
+          <p>ルールやお知らせを常に見える場所に固定表示。編集・更新もかんたんに行えます。</p>
+        </div>
+        <div class="card">
+          <div class="icon">🗂️</div>
+          <h3>過去ログの出力</h3>
+          <p>チャンネルやフォーラムの過去ログをExcel/CSV/テキストで一括エクスポート。</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎮</div>
+          <h3>みんなで遊べるゲーム</h3>
+          <p>サーバー内で盛り上がるミニゲームやイベント企画用のBotも製作可能です。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>ご依頼の流れ</h2>
+        <p>お支払い・やり取りはすべてKo-fi上で完結します。</p>
+      </div>
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <div class="flow-body">
+            <h4>Ko-fiでご相談</h4>
+            <p>「Commissions（依頼）」からご希望の機能・サーバー規模・ご予算感をお送りください。</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <div class="flow-body">
+            <h4>お見積もり・要件の確定</h4>
+            <p>ヒアリングのうえ、内容とお見積もりをご案内します。ご納得いただいてからのお支払いです。</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <div class="flow-body">
+            <h4>開発・テスト</h4>
+            <p>テスト用サーバーで実際の動作をご確認いただきながら製作を進めます。</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <div class="flow-body">
+            <h4>納品・導入</h4>
+            <p>ご自身のサーバーへ導入、または仕様に合わせた専用サーバーごとご用意します。</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">5</div>
+          <div class="flow-body">
+            <h4>（ご希望の方は）月額サポート</h4>
+            <p>納品後の追加機能・不具合対応・保守運用は、Ko-fiの月額サポートプランで継続対応します。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>月額サポートプラン（例）</h2>
+        <p>納品後もBotを育てていきたい方向けの継続プランです。金額・内容はご相談のうえ調整可能です。</p>
+      </div>
+      <div class="tiers">
+        <div class="tier">
+          <div class="name">Basic</div>
+          <div class="price">¥500<small>/月</small></div>
+          <ul>
+            <li>軽微な不具合対応</li>
+            <li>設定変更のご相談</li>
+          </ul>
+        </div>
+        <div class="tier">
+          <div class="name">Standard</div>
+          <div class="price">¥1,500<small>/月</small></div>
+          <ul>
+            <li>Basicの内容すべて</li>
+            <li>小規模な機能追加</li>
+            <li>月1回までの仕様調整</li>
+          </ul>
+        </div>
+        <div class="tier">
+          <div class="name">Premium</div>
+          <div class="price">¥3,000<small>/月</small></div>
+          <ul>
+            <li>Standardの内容すべて</li>
+            <li>優先対応・随時のご相談</li>
+            <li>サーバー運用の伴走サポート</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note-tag">※ 表示金額は一例です。ご依頼内容に応じて個別にご案内します。</p>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-box">
+        <h2>まずはお気軽にご相談ください</h2>
+        <p>
+          Discordのプロフィールからでも、Ko-fiのメッセージからでも構いません。
+          「こんなことができますか？」というご相談だけでも大歓迎です。
+        </p>
+        <a class="btn btn-kofi" href="https://ko-fi.com/karenelysia" target="_blank" rel="noopener noreferrer">☕ Ko-fiでKarenElysiaに連絡する</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      © KarenElysia — Discord Bot 受注制作<br />
+      お問い合わせ・お見積もりは <a href="https://ko-fi.com/karenelysia" target="_blank" rel="noopener noreferrer">Ko-fi</a> より承っております。
+    </div>
+  </footer>
+
+</body>
+</html>
