@@ -185,14 +185,82 @@
 
   footer { padding: 30px 0 50px; text-align: center; font-size: 12px; color: var(--sub); }
   footer a { color: var(--sub); text-decoration: underline; }
+
+  /* ── 言語切り替え（Google翻訳） ── */
+  /* デフォルトのGoogle翻訳UIは完全に隠し、独自のセレクトから切り替える。
+     上部の「〇〇語に翻訳されました」バナーもレイアウト崩れの原因になるため確実に潰す */
+  .goog-te-banner-frame.skiptranslate, .goog-te-banner-frame, iframe.skiptranslate {
+    display: none !important; visibility: hidden !important; height: 0 !important;
+  }
+  body { top: 0px !important; position: static !important; }
+  html { margin-top: 0 !important; }
+  #google_translate_element { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
+  .goog-tooltip, .goog-tooltip:hover { display: none !important; }
+  .goog-text-highlight { background: none !important; box-shadow: none !important; }
+  #lang-select {
+    font-size: 12px; font-weight: 700; color: var(--ink);
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 20px;
+    padding: 7px 12px; outline: none; cursor: pointer;
+  }
+
+  /* ── サポートチャット ── */
+  #sc-toggle {
+    position: fixed; right: 18px; bottom: 18px; z-index: 999;
+    width: 54px; height: 54px; border-radius: 50%; border: none;
+    background: linear-gradient(135deg, var(--blurple), var(--pink));
+    color: #fff; font-size: 22px; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(88,101,242,.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  #sc-badge {
+    position: absolute; top: 2px; right: 2px; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--pink); border: 2px solid var(--surface); display: none;
+  }
+  #sc-panel {
+    position: fixed; right: 18px; bottom: 84px; z-index: 998;
+    width: 320px; max-width: calc(100vw - 36px); height: 420px; max-height: 70vh;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    box-shadow: 0 16px 44px rgba(0,0,0,.25);
+    display: none; flex-direction: column; overflow: hidden;
+  }
+  #sc-panel.open { display: flex; }
+  #sc-header { background: linear-gradient(135deg, var(--blurple), var(--pink)); color: #fff; padding: 12px 16px; font-weight: 800; font-size: 14px; }
+  #sc-header small { display: block; font-weight: 400; opacity: .9; font-size: 11px; margin-top: 2px; }
+  #sc-name-step { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  #sc-name-step input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13px; color: var(--ink); outline: none; }
+  #sc-name-step button, #sc-send { background: linear-gradient(135deg, var(--blurple), var(--pink)); border: none; border-radius: 8px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
+  #sc-name-step button { padding: 10px; }
+  #sc-body { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+  #sc-body.open { display: flex; }
+  #sc-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  #sc-list .sc-empty { font-size: 12px; color: var(--sub); text-align: center; margin-top: 20px; }
+  .sc-msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .sc-msg.user { align-self: flex-end; background: var(--blurple); color: #fff; }
+  .sc-msg.admin { align-self: flex-start; background: var(--surface2); color: var(--ink); }
+  #sc-inputrow { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--border); }
+  #sc-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; font-size: 13px; color: var(--ink); outline: none; }
+  #sc-send { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+  #sc-send:disabled { opacity: .5; cursor: default; }
+  #sc-offline { font-size: 11px; color: var(--sub); text-align: center; padding: 8px; }
 </style>
 </head>
 <body>
 
+  <div id="google_translate_element"></div>
+
   <div class="wrap">
     <nav class="nav">
       <div class="brand"><span class="dot"></span> KarenElysia Bot Order</div>
-      <a class="cta" href="https://ko-fi.com/karenelysia" target="_blank" rel="noopener noreferrer">Ko-fiで相談する</a>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <select id="lang-select">
+          <option value="ja">🌐 日本語</option>
+          <option value="en">🌐 English</option>
+          <option value="zh-CN">🌐 中文</option>
+          <option value="ko">🌐 한국어</option>
+          <option value="ru">🌐 Русский</option>
+        </select>
+        <a class="cta" href="https://ko-fi.com/karenelysia" target="_blank" rel="noopener noreferrer">Ko-fiで相談する</a>
+      </div>
     </nav>
   </div>
 
@@ -351,6 +419,182 @@
       お問い合わせ・お見積もりは <a href="https://ko-fi.com/karenelysia" target="_blank" rel="noopener noreferrer">Ko-fi</a> より承っております。
     </div>
   </footer>
+
+  <!-- ─── サポートチャット ───
+       履歴・返信・CSVエクスポートは discord-log-bot-railway アプリ側で管理される。
+       このLPは静的サイトのため、同アプリの公開API(/api/support/*)をCORS経由で呼び出す。 -->
+  <button id="sc-toggle" aria-label="サポートチャットを開く">💬<span id="sc-badge"></span></button>
+  <div id="sc-panel">
+    <div id="sc-header">サポートチャット<small>Discordアカウント不要でご質問いただけます</small></div>
+    <div id="sc-name-step">
+      <div style="font-size:12px;color:var(--sub);">お名前（ニックネーム可）を入力してください</div>
+      <input id="sc-name-input" placeholder="例：田中" />
+      <button id="sc-name-confirm">チャットを始める</button>
+    </div>
+    <div id="sc-body">
+      <div id="sc-list"><div class="sc-empty">お気軽にご質問ください。担当者が確認後、こちらに返信します。</div></div>
+      <div id="sc-inputrow">
+        <input id="sc-input" placeholder="メッセージを入力..." />
+        <button id="sc-send">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var API_BASE = "https://discord-log-bot-railway-production.up.railway.app";
+    var LS_CONV = "bot_order_support_conversation_id";
+    var LS_NAME = "bot_order_support_visitor_name";
+    var LS_SEEN = "bot_order_support_last_seen_id";
+
+    function genId() {
+      try { return crypto.randomUUID(); } catch (e) { return Date.now() + "-" + Math.random().toString(36).slice(2); }
+    }
+    var convId = localStorage.getItem(LS_CONV);
+    if (!convId) { convId = genId(); localStorage.setItem(LS_CONV, convId); }
+    var name = localStorage.getItem(LS_NAME) || "";
+
+    var toggle = document.getElementById("sc-toggle");
+    var badge = document.getElementById("sc-badge");
+    var panel = document.getElementById("sc-panel");
+    var nameStep = document.getElementById("sc-name-step");
+    var body = document.getElementById("sc-body");
+    var nameInput = document.getElementById("sc-name-input");
+    var nameConfirm = document.getElementById("sc-name-confirm");
+    var list = document.getElementById("sc-list");
+    var input = document.getElementById("sc-input");
+    var sendBtn = document.getElementById("sc-send");
+
+    var open = false;
+    var messages = [];
+
+    function render() {
+      if (messages.length === 0) {
+        list.innerHTML = '<div class="sc-empty">お気軽にご質問ください。担当者が確認後、こちらに返信します。</div>';
+        return;
+      }
+      list.innerHTML = messages.map(function (m) {
+        var cls = m.sender === "user" ? "user" : "admin";
+        var esc = String(m.content).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return '<div class="sc-msg ' + cls + '">' + esc + '</div>';
+      }).join("");
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function poll() {
+      fetch(API_BASE + "/api/support/messages?conversationId=" + encodeURIComponent(convId) + "&afterId=0")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (!data || !Array.isArray(data.messages) || data.messages.length === 0) return;
+          messages = data.messages;
+          if (open) render();
+          var lastSeen = Number(localStorage.getItem(LS_SEEN) || "0");
+          var newestAdmin = null;
+          for (var i = messages.length - 1; i >= 0; i--) { if (messages[i].sender === "admin") { newestAdmin = messages[i]; break; } }
+          if (!open && newestAdmin && newestAdmin.id > lastSeen) badge.style.display = "block";
+        })
+        .catch(function () {});
+    }
+
+    toggle.addEventListener("click", function () {
+      open = !open;
+      panel.className = open ? "open" : "";
+      toggle.textContent = open ? "✕" : "💬";
+      if (open) { toggle.appendChild(badge); }
+      if (open) {
+        badge.style.display = "none";
+        if (messages.length) localStorage.setItem(LS_SEEN, String(messages[messages.length - 1].id));
+        render();
+        poll();
+      }
+    });
+
+    if (name) {
+      nameStep.style.display = "none";
+      body.className = "open";
+    }
+
+    nameConfirm.addEventListener("click", function () {
+      var v = nameInput.value.trim();
+      if (!v) return;
+      name = v;
+      localStorage.setItem(LS_NAME, v);
+      nameStep.style.display = "none";
+      body.className = "open";
+    });
+    nameInput.addEventListener("keydown", function (e) { if (e.key === "Enter") nameConfirm.click(); });
+
+    function send() {
+      var v = input.value.trim();
+      if (!v) return;
+      sendBtn.disabled = true;
+      fetch(API_BASE + "/api/support/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversationId: convId, visitorName: name || null, content: v }),
+      }).then(function (r) {
+        if (r.ok) { input.value = ""; poll(); }
+      }).finally(function () { sendBtn.disabled = false; });
+    }
+    sendBtn.addEventListener("click", send);
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) send(); });
+
+    poll();
+    setInterval(poll, 6000);
+  })();
+  </script>
+
+  <script>
+  (function () {
+    // ─── Google翻訳（デフォルトUIは隠し、上部のセレクトから操作） ───
+    window.googleTranslateElementInit = function () {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: "ja",
+          includedLanguages: "ja,en,zh-CN,ko,ru",
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false,
+        },
+        "google_translate_element"
+      );
+    };
+    var script = document.createElement("script");
+    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    document.body.appendChild(script);
+
+    function cookieDomainBase() {
+      var parts = location.hostname.split(".");
+      return parts.length > 1 ? parts.slice(-2).join(".") : location.hostname;
+    }
+    function getCookie(name) {
+      var m = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+      return m ? decodeURIComponent(m[1]) : null;
+    }
+    function currentLang() {
+      var raw = getCookie("googtrans");
+      if (!raw) return "ja";
+      var parts = raw.split("/").filter(Boolean);
+      return parts[1] || "ja";
+    }
+
+    var langSelect = document.getElementById("lang-select");
+    langSelect.value = currentLang();
+
+    langSelect.addEventListener("change", function () {
+      var value = langSelect.value;
+      var base = cookieDomainBase();
+      document.cookie = "googtrans=; path=/; max-age=0";
+      document.cookie = "googtrans=; path=/; domain=." + base + "; max-age=0";
+      if (value !== "ja") {
+        var cookieVal = "/ja/" + value;
+        document.cookie = "googtrans=" + cookieVal + "; path=/";
+        document.cookie = "googtrans=" + cookieVal + "; path=/; domain=." + base;
+      }
+      location.reload();
+    });
+  })();
+  </script>
 
 </body>
 </html>
